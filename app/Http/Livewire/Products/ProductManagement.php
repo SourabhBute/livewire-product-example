@@ -22,6 +22,28 @@ class ProductManagement extends Component
 
     public $products=[];
 
+
+    protected $rules=[
+        'category_name' => 'required|string',
+        'products.*.name' => 'required|string',
+        'products.*.price' =>'required|numeric|min:0',
+    ];
+
+
+
+    protected $messages = [
+        'products.*.name.required' => 'The prdouct name field is required.',
+        'products.*.price.required' => 'This Price field is required',
+        'products.*.price.numeric' => 'Please enter a valid price',
+    ];
+
+    public function updated($propertyName){
+
+       $this->validateOnly($propertyName);
+
+    }
+
+
     public function mount()
     {
         if($this->updateMode == false) {
@@ -54,18 +76,7 @@ class ProductManagement extends Component
 
     public function store() {
 
-       $validated = $this->validate([
-            'category_name' => 'required|string',
-            'products.*.name' => 'required|string',
-            'products.*.price' =>'required|numeric|min:0',
-        ],
-        [
-            'products.*.name.required' => 'The prdouct name field is required.',
-            'products.*.price.required' => 'This Price field is required',
-            'products.*.price.numeric' => 'Please enter a valid price',
-
-
-        ]);
+        $this->validate();
 
         $category  =  Category::Create([
             'category_name' => $this->category_name,
@@ -97,18 +108,7 @@ class ProductManagement extends Component
 
     public function update() {
 
-        $validated = $this->validate([
-            'category_name' => 'required|string',
-            'products.*.name' => 'required|string',
-            'products.*.price' =>'required|numeric|min:0',
-        ],
-        [
-            'products.*.name.required' => 'The prdouct name field is required.',
-            'products.*.price.required' => 'This Price field is required',
-            'products.*.price.numeric' => 'Please enter a valid price',
-
-
-        ]);
+        $this->validate();
 
         Category::where('id', $this->category_id)->update(["category_name" => $this->category_name]);
 
